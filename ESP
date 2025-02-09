@@ -1,0 +1,36 @@
+local Players = game:GetService("Players")
+
+local highlightEnabled = true
+
+local function applyHighlight(player)
+    local character = player.Character
+    if character and highlightEnabled then
+        
+        if not character:FindFirstChild("PlayerHighlight") then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "PlayerHighlight"
+            highlight.Parent = character
+            highlight.Adornee = character
+            highlight.FillTransparency = 1
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+            highlight.OutlineTransparency = 0
+            highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+        end
+    elseif character then
+        
+        local existingHighlight = character:FindFirstChild("PlayerHighlight")
+        if existingHighlight then
+            existingHighlight:Destroy()
+        end
+    end
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    applyHighlight(player)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        applyHighlight(player)
+    end)
+end)
